@@ -1,4 +1,5 @@
 import math
+import math
 import pprint
 from collections.abc import Collection
 from collections.abc import Sized
@@ -974,3 +975,15 @@ class RaisesContext(Generic[E]):
         if self.match_expr is not None:
             self.excinfo.match(self.match_expr)
         return True
+import math
+
+def _format_approx(number_of_elements: int, different_ids: Sequence[object], max_abs_diff: float, max_rel_diff: float) -> List[str]:
+    explanation = [
+        f"comparison failed. Mismatched elements: {len(different_ids)} / {number_of_elements}:",
+        f"Max absolute difference: {max_abs_diff}",
+        f"Max relative difference: {max_rel_diff}",
+        # Any additional formatting that is required to display the difference.
+        # References to math.inf should be replaced with math.inf
+    ]
+    # Code to construct and return the list of formatted strings if any required
+    return explanation
