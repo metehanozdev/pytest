@@ -78,6 +78,20 @@ def deprecated_call(
     one for each warning raised.
     """
     __tracebackhide__ = True
+    if expected_warning is None:
+        raise TypeError(
+            "Passing `expected_warning=None` is an error, because it's "
+            "impossible to emit a warning which is not an instance of any type. "
+            "To assert that no warnings are emitted, use `pytest.warns(None)` to explicitly "
+            "declare that no warnings are expected."
+        )
+    elif isinstance(expected_warning, tuple) and not expected_warning:
+        raise TypeError(
+            "Passing `expected_warning=()` is an error, because it's "
+            "impossible to emit a warning which is not an instance of any type. "
+            "To assert that no warnings are emitted, use `pytest.warns(None)` to explicitly "
+            "declare that no warnings are expected."
+        )
     if func is not None:
         args = (func,) + args
     return warns((DeprecationWarning, PendingDeprecationWarning), *args, **kwargs)
