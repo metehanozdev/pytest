@@ -504,6 +504,9 @@ def import_path(
         mod = importlib.util.module_from_spec(spec)
         sys.modules[module_name] = mod
         spec.loader.exec_module(mod)  # type: ignore[union-attr]
+        if path.is_dir() and path.joinpath("__init__.py").exists():
+            mod.__path__ = [str(path)]
+        insert_missing_modules(sys.modules, module_name)
         insert_missing_modules(sys.modules, module_name)
         return mod
 

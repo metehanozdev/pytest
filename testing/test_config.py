@@ -476,6 +476,27 @@ class TestConfigCmdlineParsing:
         config = pytester.parseconfig()
         pytest.raises(AssertionError, lambda: config.parse([]))
 
+    def test_import_mode_importlib_with_conftest_and_pythonpath(self, pytester: Pytester):
+        pytester.makepyfile(tests="__init__.py")
+        pytester.makepyfile(tests_conftest="# Existence of this file breaks package discovery")
+        pytester.makepyfile(tests_subpath="__init__.py")
+        pytester.makepyfile(tests_subpath_helper="# Empty helper file")
+        test_file_content = textwrap.dedent("""
+            import tests.subpath.helper
+            def test_something():
+                assert True
+        """)
+        pytester.makepyfile(tests_subpath_test_something=test_file_content)
+        pytester.makefile(".ini", pytest="""
+            [tool:pytest]
+            pythonpath = .
+            addopts = --import-mode importlib
+        """)
+        
+        result = pytester.runpytest()
+        # The test should pass indicating that tests.subpath.helper was imported correctly
+        assert result.ret == 0
+
     def test_explicitly_specified_config_file_is_loaded(
         self, pytester: Pytester
     ) -> None:
