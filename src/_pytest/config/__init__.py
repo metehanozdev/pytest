@@ -534,17 +534,10 @@ class PytestPluginManager(PluginManager):
             self._try_load_conftest(current, namespace.importmode, rootpath)
 
     def _is_in_confcutdir(self, path: Path) -> bool:
-        """Whether a path is within the confcutdir.
-
-        When false, should not load conftest.
-        """
+        """Whether a path is within the confcutdir."""
         if self._confcutdir is None:
             return True
-        try:
-            path.relative_to(self._confcutdir)
-        except ValueError:
-            return False
-        return True
+        return path not in self._confcutdir.parents
 
     def _try_load_conftest(
         self, anchor: Path, importmode: Union[str, ImportMode], rootpath: Path
