@@ -426,9 +426,24 @@ if TYPE_CHECKING:
             *conditions: Union[str, bool],
             reason: str = ...,
             run: bool = ...,
-            raises: Union[Type[BaseException], Tuple[Type[BaseException], ...]] = ...,
+            raises: Union[Type[BaseException], Tuple[Type[BaseException], ...]] = (),
             strict: bool = ...,
         ) -> MarkDecorator:
+            __tracebackhide__ = True
+            if raises is None:
+                raise UsageError(
+                    "Passing `raises=None` to xfail is an error, because it's "
+                    "impossible to raise an exception which is not an instance of any type. "
+                    "Raising exceptions is already understood as failing the test, so you "
+                    "don't need any special code to say 'this should never raise an exception'."
+                )
+            elif isinstance(raises, tuple) and not raises:
+                raise UsageError(
+                    "Passing `raises=()` to xfail is an error, because it's impossible "
+                    "to raise an exception which is not an instance of any type. Raising "
+                    "exceptions is already understood as failing the test, so you don't need "
+                    "any special code to say 'this should never raise an exception'."
+                )
             ...
 
     class _ParametrizeMarkDecorator(MarkDecorator):

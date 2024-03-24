@@ -708,6 +708,19 @@ def approx(expected, rel=None, abs=None, nan_ok: bool = False) -> ApproxBase:
 
     __tracebackhide__ = True
 
+    if expected_exception is None:
+        raise UsageError(
+            "Passing `expected_exception=None` is invalid, as it is ambiguous for "
+            "what exceptions pytest should catch. To assert that no exception is "
+            "expected, simply execute the block without using `pytest.raises()`."
+        )
+    if isinstance(expected_exception, tuple) and not expected_exception:
+        raise UsageError(
+            "Passing an empty tuple `expected_exception=()` is invalid, as it would "
+            "not specify any exceptions to catch. To assert that no exception is "
+            "expected, simply execute the block without using `pytest.raises()`."
+        )
+
     if isinstance(expected, Decimal):
         cls: Type[ApproxBase] = ApproxDecimal
     elif isinstance(expected, Mapping):
