@@ -189,7 +189,7 @@ class TestCaseFunction(Function):
         # A bound method to be called during teardown() if set (see 'runtest()').
         self._explicit_tearDown: Optional[Callable[[], None]] = None
         assert self.parent is not None
-        self._testcase = self.parent.obj(self.name)  # type: ignore[attr-defined]
+        self._testcase = self.parent.obj(self.name or 'runTest')  # type: ignore[attr-defined]
         self._obj = getattr(self._testcase, self.name)
         if hasattr(self, "_request"):
             self._request._fillfixtures()
