@@ -311,8 +311,8 @@ class ApproxSequencelike(ApproxBase):
 
     def __repr__(self) -> str:
         seq_type = type(self.expected)
-        if seq_type not in (tuple, list, set):
-            seq_type = list
+        if seq_type not in (tuple, list):
+            raise TypeError(f"pytest.approx() is not supported for sequence type {seq_type.__name__!r}")
         return "approx({!r})".format(
             seq_type(self._approx_scalar(x) for x in self.expected)
         )
